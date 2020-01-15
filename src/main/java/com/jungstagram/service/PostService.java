@@ -1,17 +1,19 @@
 package com.jungstagram.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jungstagram.domain.Follow;
 import com.jungstagram.domain.Post;
-import com.jungstagram.domain.User;
 import com.jungstagram.dto.PostDto;
 import com.jungstagram.persistence.FollowRepository;
 import com.jungstagram.persistence.PostRepository;
@@ -44,8 +46,10 @@ public class PostService {
 		return postRepo.findById(postId).get();
 	}
 	
-	public List<Post> findPostList() {
-		return postRepo.findAllByOrderByIdDesc();
+	public Page<Post> findPostList(int page) {
+		Pageable paging = PageRequest.of(page, 5, Sort.Direction.DESC, "id");
+		Page<Post> pageInfo = postRepo.findAll(paging);
+		return pageInfo;
 	}
 	
 	@Transactional
@@ -72,7 +76,7 @@ public class PostService {
 	}
 	
 	@Transactional
-	public List<Post> findFollowPostListByUserId(Long userId) {
+	public List<Post> findFolloweePostListByUserId(Long userId) {
 		List<Post> postList = new ArrayList<Post>();
 		List<Follow> followList = followRepo.findByFollowerId(userId);
 		

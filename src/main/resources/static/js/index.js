@@ -11,7 +11,7 @@ $(document).ready(function(){
         },
         url: "/post"
     }).then(function(data) {
-    	$.each(data[1], function(index, e) {
+    	$.each(data[1].content, function(index, e) {
     		console.log(data[1]);
     		$('#posts').append(
     				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
@@ -21,23 +21,26 @@ $(document).ready(function(){
     				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
     				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
     				+ '</div> </div>');
+    		
+    		
     	});
+    	
+    	$('#posts').append(
+                '<div id="addlistbtnarea">' 
+                +'<div class="btns">'
+                +'<button id="addlistbtn" onclick="javascript:moreList(this);" value="0" class="btn btn-primary btn-block">더보기</button>'
+                +'</div>'
+                +'</div><br>'
+    	);
+    	
+    	if(data[1].last == true){
+            // 더 불러올 펀딩 목록이 없는 경우 버튼을 disabled 지정하면 불투명해지면서 클릭불가능해짐 (부트스트랩)
+            $('#addlistbtn').attr("class","btn btn-primary btn-block disabled");
+            $('#addlistbtn').text("더 불러올 목록이 없습니다");
+    	}
     }, function(err) {
     	console.log(err.responseJSON);
     });
-	
-	function getFollowInfo(user, owner, followee) {
-		if(user == owner) {
-			return '';
-		} else {
-			if(followee.indexOf(user) == -1){
-				return ' <span class="follow" value="' + user + '" style="color:blue; cursor: pointer;"> Follow </span>';
-			} else {
-				return ' <span class="unfollow" value="' + user + '" style="color:blue; cursor: pointer;"> Unfollow </span>';
-			}
-		}
-	}
-	
 	
 	if(token) {
 		$.ajax({
@@ -144,5 +147,63 @@ $(document).ready(function(){
 	    	alert(err.responseJSON);
 	    });
 	});
-	
 });
+
+function moreList(btn){
+    console.log("moreList에서 받은 매개변수 : "+btn);
+    console.log("moreList 매개변수로 들어온 (버튼객체)의 value = 페이징 "+btn.value);
+    $.ajax({
+        url : "/getmorelist",
+        type : "get",
+        cache : false,
+        dataType: 'json',
+        data : {numberOfRequests : btn.value },
+        success : function(data){
+            console.log(data);
+            console.log(data[1].last);
+            
+            $.each(data[1].content, function(index, e) {
+            	console.log("title = "+e.title);
+        		$('#posts').append(
+        				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
+        				+ '</h2> <p class="card-text">' + e.content 
+        				+ '</p> <a href="/post/detail/' + e.id 
+        				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
+        				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
+        				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
+        				+ '</div> </div>');
+        	});
+        
+            var pagingNum = data[1].number;
+            $('#addlistbtnarea').remove();
+            $('#posts').append(
+            		'<div id="addlistbtnarea">' 
+                    +'<div class="btns">'
+                    +'<button id="addlistbtn" onclick="javascript:moreList(this);" value="'+pagingNum+'" class="btn btn-primary btn-block">더보기</button>'
+                    +'</div>'
+                    +'</div><br>'
+            );
+            
+            if(data[1].last == true){
+                $('#addlistbtn').attr("class","btn btn-primary btn-block disabled");
+                $('#addlistbtn').text("더 불러올 목록이 없습니다");
+            }
+        }, 
+        error : function(){
+           alert('ajax 통신 실패');
+        }
+   
+    });
+}
+
+function getFollowInfo(user, owner, followee) {
+	if(user == owner) {
+		return '';
+	} else {
+		if(followee.indexOf(user) == -1){
+			return ' <span class="follow" value="' + user + '" style="color:blue; cursor: pointer;"> Follow </span>';
+		} else {
+			return ' <span class="unfollow" value="' + user + '" style="color:blue; cursor: pointer;"> Unfollow </span>';
+		}
+	}
+}

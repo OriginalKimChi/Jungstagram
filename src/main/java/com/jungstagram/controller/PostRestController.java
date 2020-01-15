@@ -16,13 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jungstagram.domain.Follow;
 import com.jungstagram.domain.Post;
-import com.jungstagram.domain.Token;
-import com.jungstagram.domain.User;
-import com.jungstagram.dto.FollowDto;
 import com.jungstagram.dto.PostDto;
-import com.jungstagram.dto.UserDto;
 import com.jungstagram.service.FollowService;
 import com.jungstagram.service.PostService;
 import com.jungstagram.service.UserService;
@@ -31,8 +26,8 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-public class WebRestController {
-
+public class PostRestController {
+	
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -40,35 +35,13 @@ public class WebRestController {
 	@Autowired
 	private FollowService followService;
 	
-	@GetMapping("/user")
-	public User getUser(@RequestParam(value = "id") Long id) {
-		return userService.findUserById(id);
-	}
-
-	@PostMapping("/user")
-	public User saveUser(@RequestBody UserDto dto) {
-		return userService.saveUser(dto);
-	}
-
-	@PostMapping("/auth")
-	public Token loginUser(@RequestBody UserDto user, HttpServletRequest request) {
-		User result = userService.findUserByUsernameAndPassword(user);
-
-		if (result != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("userId", result.getId());
-			return userService.saveToken(result);
-		}
-		return null;
-	}
-
 	@GetMapping("/post/feed")
 	public List<Object> getFollowPost(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Long userId = (Long) session.getAttribute("userId");
 		List<Object> result = new ArrayList<Object>();
 		result.add(userService.findUserById(userId).getId());
-		result.add(postService.findFollowPostListByUserId(userId));
+		result.add(postService.findFolloweePostListByUserId(userId));
 		result.add(userService.findFolloweeListByUserId(userId));
 		return result;
 	}
@@ -79,7 +52,7 @@ public class WebRestController {
 		Long userId = (Long) session.getAttribute("userId");
 		List<Object> result = new ArrayList<Object>();
 		result.add(userService.findUserById(userId).getId());
-		result.add(postService.findPostList());
+		result.add(postService.findPostList(0));
 		result.add(userService.findFolloweeListByUserId(userId));
 		return result;
 	}
@@ -122,20 +95,14 @@ public class WebRestController {
 		return true;
 	}
 
-	@PostMapping("/follow")
-	public boolean follow(@RequestBody FollowDto followDto, HttpServletRequest request) {
+	@GetMapping("/getmorelist")
+	public List<Object> getMorePostList(@RequestParam("numberOfRequests") int numberOfRequest, HttpServletRequest request){
 		HttpSession session = request.getSession();
 		Long userId = (Long) session.getAttribute("userId");
-		followService.saveFollowByUserIdAndFolloweeId(userId, followDto.getFollowee_id());
-		return true;
+		List<Object> result = new ArrayList<Object>();
+		result.add(userService.findUserById(userId).getId());
+		result.add(postService.findPostList(numberOfRequest + 1));
+		result.add(userService.findFolloweeListByUserId(userId));
+		return result;
 	}
-
-	@DeleteMapping("/follow")
-	public boolean unfollow(@RequestBody FollowDto followDto, HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		Long userId = (Long) session.getAttribute("userId");
-		followService.deleteFollowByUserIdAndFolloweeId(userId, followDto.getFollowee_id());
-		return true;
-	}
-
 }
