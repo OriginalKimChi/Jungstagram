@@ -51,11 +51,13 @@
           
           <hr>
           
+          <#if writer??>
           <button class="btn btn-primary" data-toggle="modal"
 				data-target="#modify_post_modal">Modify</button>
           <button class="btn btn-danger" id="detail_delete_btn">Delete</button>
-          
+       	  </#if>
           <hr>
+          
           
           <div class="card my-4">
             <h5 class="card-header">Leave a Comment:</h5>

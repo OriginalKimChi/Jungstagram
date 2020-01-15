@@ -1,7 +1,7 @@
 package com.jungstagram.dto;
 
 import com.jungstagram.domain.Post;
-import com.jungstagram.domain.UserRepository;
+import com.jungstagram.persistence.UserRepository;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,9 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PostDto {
-	
-	private UserRepository userRepo;
 
+	private Long id;
 	private String title;
 	private String content;
 	private UserDto userDto;
@@ -24,13 +23,5 @@ public class PostDto {
 		this.title = title;
 		this.content = content;
 		this.userDto = userDto;
-	}
-	
-	public Post toEntity(String userId) {
-		return Post.builder()
-				.title(title)
-				.content(content)
-				.user(userRepo.findById(userId).get())
-				.build();
 	}
 }

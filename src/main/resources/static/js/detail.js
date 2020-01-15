@@ -7,10 +7,11 @@ $(document).ready(function(){
         url: "/post/" + postId
     }).then(function(data) {
        console.log(data);
-       $('#detail_title').text(data.data.title);
-       $('#detail_user').text(data.data.user.username);
-       $('#detail_date').text(data.data.createdAt);
-       $('#detail_content').text(data.data.content);
+       $('#detail_title').text(data.title);
+       $('#detail_user').text(data.user.username);
+       $('#detail_date').text(data.createdAt);
+       $('#detail_content').text(data.content);
+       
     }, function(err) {
     	console.log(err.responseJSON);
     });

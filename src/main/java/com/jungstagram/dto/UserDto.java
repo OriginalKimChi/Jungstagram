@@ -11,15 +11,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDto {
 
-	private String id;
+	private Long id;
 	private String password;
-	private String userName;
+	private String username;
 	
 	public User toEntity() {
 		return User.builder()
 				.id(id)
 				.password(password)
-				.userName(userName)
+				.username(username)
 				.build();
 			
 	}

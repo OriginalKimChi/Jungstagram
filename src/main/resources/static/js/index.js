@@ -11,30 +11,31 @@ $(document).ready(function(){
         },
         url: "/post"
     }).then(function(data) {
-    	$.each(data.data, function(index, e) {
+    	$.each(data[1], function(index, e) {
+    		console.log(data[1]);
     		$('#posts').append(
     				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
     				+ '</h2> <p class="card-text">' + e.content 
     				+ '</p> <a href="/post/detail/' + e.id 
     				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
     				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
-    				+ ' by ' + e.user.username + getFollowInfo(e.user)
+    				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
     				+ '</div> </div>');
     	});
-       console.log(data);
     }, function(err) {
     	console.log(err.responseJSON);
     });
 	
-	function getFollowInfo(user) {
-		if(user.isFollow) {
-			return ' <span class="unfollow" value="' + user.id + '" style="color:blue; cursor: pointer;"> Unfollow </span>';	
-		} else if(user.isFollow == null){
+	function getFollowInfo(user, owner, followee) {
+		if(user == owner) {
 			return '';
 		} else {
-			return ' <span class="follow" value="' + user.id + '" style="color:blue; cursor: pointer;"> Follow </span>';
+			if(followee.indexOf(user) == -1){
+				return ' <span class="follow" value="' + user + '" style="color:blue; cursor: pointer;"> Follow </span>';
+			} else {
+				return ' <span class="unfollow" value="' + user + '" style="color:blue; cursor: pointer;"> Unfollow </span>';
+			}
 		}
-		
 	}
 	
 	
@@ -45,17 +46,17 @@ $(document).ready(function(){
 	        },
 	        url: "/post/feed"
 	    }).then(function(data) {
-	    	$.each(data.data, function(index, e) {
+	    	$.each(data[1], function(index, e) {
+	    		console.log(data[1]);
 	    		$('#myfeed').append(
 	    				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
 	    				+ '</h2> <p class="card-text">' + e.content 
 	    				+ '</p> <a href="/post/detail/' + e.id 
 	    				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
 	    				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
-	    				+ ' by ' + e.user.username + getFollowInfo(e.user)
+	    				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
 	    				+ '</div> </div>');
 	    	});
-	       console.log(data);
 	    }, function(err) {
 	    	console.log(err.responseJSON);
 	    });
@@ -91,17 +92,16 @@ $(document).ready(function(){
 	
 	$('#header_logout_btn').click(function(){
 		document.cookie = "accesstoken=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-		window.location.href = '/';
+		window.location.href = '/logout';
 	});
 	
 	$('body').on('click', '.follow', function($event) {
 		console.log($(event.target).html());
-		console.log($(this).html());
 		console.log($(this).attr('value'));
 		var userId = $(this).attr('value');
 		
 		var param = {
-			followeeId: userId
+			followee_id: userId
 		}
 		
 		$.ajax({
@@ -114,7 +114,7 @@ $(document).ready(function(){
             contentType: 'application/json',
             data: JSON.stringify(param)
 	    }).then(function(data) {
-	    	window.location.reload(); 	    
+	    	window.location.reload();
 	    }, function(err) {
 	    	alert(err.responseJSON);
 	    });
@@ -122,11 +122,11 @@ $(document).ready(function(){
 	
 	$('body').on('click', '.unfollow', function() {
 		console.log("unfollow clicked!!!");
-		
+		console.log($(this).attr('value'));
 		var userId = $(this).attr('value');
 		
 		var param = {
-			followeeId: userId
+			followee_id: userId
 		}
 		
 		$.ajax({
