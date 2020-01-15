@@ -34,17 +34,6 @@ public class PostRestController {
 	private PostService postService;
 	@Autowired
 	private FollowService followService;
-	
-	@GetMapping("/post/feed")
-	public List<Object> getFollowPost(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		Long userId = (Long) session.getAttribute("userId");
-		List<Object> result = new ArrayList<Object>();
-		result.add(userService.findUserById(userId).getId());
-		result.add(postService.findFolloweePostListByUserId(userId));
-		result.add(userService.findFolloweeListByUserId(userId));
-		return result;
-	}
 
 	@GetMapping("/post")
 	public List<Object> getPostList(HttpServletRequest request) {
@@ -57,6 +46,17 @@ public class PostRestController {
 		return result;
 	}
 
+	@GetMapping("/post/feed")
+	public List<Object> getFollowPost(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		Long userId = (Long) session.getAttribute("userId");
+		List<Object> result = new ArrayList<Object>();
+		result.add(userService.findUserById(userId).getId());
+		result.add(postService.findFolloweePostListByUserId(userId));
+		result.add(userService.findFolloweeListByUserId(userId));
+		return result;
+	}
+	
 	@PostMapping(value = "/post", produces = "application/json; charset=utf-8")
 	public boolean savePost(@RequestBody PostDto dto, HttpServletRequest request) {
 		HttpSession session = request.getSession();
@@ -66,11 +66,10 @@ public class PostRestController {
 	}
 
 	@PutMapping("/post")
-	public boolean updatePost(@RequestBody PostDto postDto, HttpServletRequest request) {
+	public Post updatePost(@RequestBody PostDto postDto, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Long userId = (Long) session.getAttribute("userId");
-		postService.updatePost(postDto, userId);
-		return true;
+		return postService.updatePost(postDto, userId);
 	}
 
 	@GetMapping("/post/my")

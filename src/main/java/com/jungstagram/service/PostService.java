@@ -58,7 +58,7 @@ public class PostService {
 	}
 	
 	@Transactional
-	public void updatePost(PostDto postDto, Long userId) {
+	public Post updatePost(PostDto postDto, Long userId) {
 		Post post = postRepo.findById(postDto.getId()).get();
 		System.out.println("--->" + postDto.getTitle() + postDto.getContent());
 		if(postDto.getTitle() !=  "") {
@@ -67,7 +67,7 @@ public class PostService {
 		if(postDto.getContent() != "") {
 			post.setContent(postDto.getContent());
 		}
-		postRepo.save(post);
+		return postRepo.save(post);
 	}
 	
 	@Transactional

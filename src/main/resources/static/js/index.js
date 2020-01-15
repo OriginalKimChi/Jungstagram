@@ -21,8 +21,7 @@ $(document).ready(function(){
     				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
     				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
     				+ '</div> </div>');
-    		
-    		
+
     	});
     	
     	$('#posts').append(

@@ -1,4 +1,4 @@
-$(document).ready(function(){
+ $(document).ready(function(){
 	var postId = $('#detail_post_id').attr("value");
 	postId = postId.replace(/,/g, "");
 	console.log("postId - " + postId);
@@ -53,7 +53,8 @@ $(document).ready(function(){
             contentType: 'application/json',
             data: JSON.stringify(param)
 	    }).then(function(data) {
-	    	window.location.href = '/page/detail/'+postId;
+	    	window.location.href = '/post/detail/'+postId;
+	    	console.log("modify" + postId);
 	    }, function(err) {
 	    	alert(err.responseJSON);
 	    });
