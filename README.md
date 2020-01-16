@@ -27,6 +27,7 @@ Alternatively you can use the [Spring Boot Maven plugin](https://docs.spring.io/
 
 ## User Stories
 
+-   Sign up
 -   Login/Logout
 -   Create Post
 -   See the feed
