@@ -33,7 +33,7 @@ $(document).ready(function(){
     	);
     	
     	if(data[1].last == true){
-            // 더 불러올 펀딩 목록이 없는 경우 버튼을 disabled 지정하면 불투명해지면서 클릭불가능해짐 (부트스트랩)
+            // 더 불러올 포스트 목록이 없는 경우 버튼을 disabled 지정하면 불투명해지면서 클릭불가능해짐 (부트스트랩)
             $('#addlistbtn').attr("class","btn btn-primary btn-block disabled");
             $('#addlistbtn').text("더 불러올 목록이 없습니다");
     	}

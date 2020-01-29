@@ -48,6 +48,7 @@ public class PostRestController {
 
 	@GetMapping("/post/feed")
 	public List<Object> getFollowPost(HttpServletRequest request) {
+		System.out.println("---> post/feed called");
 		HttpSession session = request.getSession();
 		Long userId = (Long) session.getAttribute("userId");
 		List<Object> result = new ArrayList<Object>();
