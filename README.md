@@ -1,4 +1,4 @@
-# Jungstagram (Project name)
+# Jungstagram
 
 Simple sns project with Spring boot
 
