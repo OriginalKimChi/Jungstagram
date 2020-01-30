@@ -11,8 +11,8 @@ $(document).ready(function(){
         },
         url: "/post"
     }).then(function(data) {
+		console.log(data[1].content);
     	$.each(data[1].content, function(index, e) {
-    		console.log(data[1]);
     		$('#posts').append(
     				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
     				+ '</h2> <p class="card-text">' + e.content 
@@ -20,7 +20,8 @@ $(document).ready(function(){
     				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
     				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
     				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
-    				+ '</div> </div>');
+    				+ '<br> <div id="viewed2' + e.id + '">' + getPostViewCount(e.id)
+    				+ '</div> </div> </div>');
 
     	});
     	
@@ -41,28 +42,28 @@ $(document).ready(function(){
     	console.log(err.responseJSON);
     });
 	
-	if(token) {
-		$.ajax({
-			beforeSend: function(xhr){
-				xhr.setRequestHeader('accesstoken', token);
-	        },
-	        url: "/post/feed"
-	    }).then(function(data) {
-	    	$.each(data[1], function(index, e) {
-	    		console.log(data[1]);
-	    		$('#myfeed').append(
-	    				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
-	    				+ '</h2> <p class="card-text">' + e.content 
-	    				+ '</p> <a href="/post/detail/' + e.id 
-	    				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
-	    				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
-	    				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
-	    				+ '</div> </div>');
-	    	});
-	    }, function(err) {
-	    	console.log(err.responseJSON);
-	    });
-	}
+	
+	
+	$.ajax({
+		beforeSend: function(xhr){
+			xhr.setRequestHeader('accesstoken', token);
+        },
+        url: "/post/feed"
+    }).then(function(data) {
+    	$.each(data[1], function(index, e) {
+    		$('#myfeed').append(
+    				'<div class="card mb-4"> <div class="card-body"> <h2 class="card-title">' + e.title 
+    				+ '</h2> <p class="card-text">' + e.content 
+    				+ '</p> <a href="/post/detail/' + e.id 
+    				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
+    				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
+    				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
+    				+ '<br> <div id="viewed' + e.id + '">' + getPostViewCountInFeed(e.id)
+    				+ '</div> </div>');
+    	});
+    }, function(err) {
+    	console.log(err.responseJSON);
+    });
 	
 	$('#save_post_btn').click(function(){
 		var title = $('#create_title_text').val();
@@ -170,6 +171,7 @@ function moreList(btn){
         				+ '" class="btn btn-primary">Read More &rarr;</a> </div> ' 
         				+ '<div class="card-footer text-muted"> Posted on ' + e.createdAt.split('T')[0]
         				+ ' by ' + e.user.username + getFollowInfo(e.user.id, data[0], data[2])
+        				+ '<br> <div id="viewed2' + e.id + '">' + getPostViewCount(e.id)
         				+ '</div> </div>');
         	});
         
@@ -205,4 +207,29 @@ function getFollowInfo(user, owner, followee) {
 			return ' <span class="unfollow" value="' + user + '" style="color:blue; cursor: pointer;"> Unfollow </span>';
 		}
 	}
+}
+
+function getPostViewCountInFeed(postId){
+	var count = 0;
+	$.ajax({
+        url: "/post/count/" + postId
+    }).then(function(data) {
+       count = data;
+       $('#viewed'+postId).text("조회수 : " + count);
+    }, function(err) {
+    	console.log(err.responseJSON);
+    });
+}
+
+function getPostViewCount(postId){
+	var count = 0;
+	$.ajax({
+        url: "/post/count/" + postId
+    }).then(function(data) {
+       count = data;
+       $('#viewed2'+postId).text("조회수 : " + count);
+    }, function(err) {
+    	console.log(err.responseJSON);
+    });
+	return "조회수 : 조회수를 불러올 수 없습니다.";
 }

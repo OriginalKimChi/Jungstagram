@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -39,6 +40,9 @@ public class Post implements Comparable<Post>{
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(insertable = false, updatable = false, columnDefinition = "datetime default CURRENT_TIMESTAMP")
 	private Date createdAt;
+	
+	@Transient
+	private long viewed;
 
 	@ManyToOne
 	@JoinColumn(name = "userId")

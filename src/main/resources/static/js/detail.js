@@ -7,11 +7,11 @@
         url: "/post/" + postId
     }).then(function(data) {
        console.log(data);
-       $('#detail_title').text(data.title);
-       $('#detail_user').text(data.user.username);
-       $('#detail_date').text(data.createdAt);
-       $('#detail_content').text(data.content);
-       
+       $('#detail_title').text(data[0].title);
+       $('#detail_user').text(data[0].user.username);
+       $('#detail_date').text(data[0].createdAt);
+       $('#detail_content').text(data[0].content);
+       $('#viewed').text("viewed : "+data[1]);
     }, function(err) {
     	console.log(err.responseJSON);
     });

@@ -21,8 +21,8 @@ $(document).ready(function(){
 	        dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify(param)
-	    }).then(function(data) {	    	
-	    	document.cookie = "accesstoken=" + data.token;
+	    }).then(function(data) {
+//	    	document.cookie = "accesstoken=" + data.token;
 	    	window.location.href = '/';
 	    }, function(err) {
 	    	alert("계정 정보를 확인해주세요.");

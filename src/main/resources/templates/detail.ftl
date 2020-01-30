@@ -48,13 +48,14 @@
 
           <div id="detail_content" class="my-5">
           </div>
-          
+          <div id="viewed"></div>
           <hr>
           
           <#if writer??>
           <button class="btn btn-primary" data-toggle="modal"
 				data-target="#modify_post_modal">Modify</button>
           <button class="btn btn-danger" id="detail_delete_btn">Delete</button>
+          
        	  </#if>
           <hr>
           

@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -85,10 +87,21 @@ public class PostRestController {
 	}
 
 	@GetMapping("/post/{postId}")
-	public Post getPost(@PathVariable("postId") Long postId) {
-		return postService.findPostById(postId);
+	public List<Object> getPost(@PathVariable("postId") Long postId) {
+		List<Object> result = new ArrayList<Object>();
+		result.add(postService.findPostById(postId));
+		result.add(postService.findPostViewCount(postId));
+		return result;
+	}
+	
+	@GetMapping("/post/count/{postId}")
+	public Long getPostCount(@PathVariable("postId") Long postId) {
+		Long count = postService.findPostViewCount(postId);
+		System.out.println("--> count = " + count);
+		return count;
 	}
 
+	@CacheEvict(value = "post-single", key = "#id")
 	@DeleteMapping("/post/{postId}")
 	public boolean deletePost(@PathVariable("postId") Long postId) {
 		postService.deletePostById(postId);
