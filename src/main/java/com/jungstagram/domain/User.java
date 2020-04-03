@@ -1,5 +1,6 @@
 package com.jungstagram.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class User {
+public class User implements Serializable{
 
 	@Id
 	@Column(name = "userId")

@@ -1,7 +1,6 @@
 package com.jungstagram.dto;
 
-import com.jungstagram.domain.Post;
-import com.jungstagram.persistence.UserRepository;
+import com.jungstagram.domain.User;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +15,12 @@ public class PostDto {
 	private Long id;
 	private String title;
 	private String content;
-	private UserDto userDto;
+	private User user;
 	
 	@Builder
-	public PostDto(String title, String content, UserDto userDto) {
+	public PostDto(String title, String content, User user) {
 		this.title = title;
 		this.content = content;
-		this.userDto = userDto;
+		this.user = user;
 	}
 }

@@ -61,11 +61,10 @@ public class PostRestController {
 	}
 	
 	@PostMapping(value = "/post", produces = "application/json; charset=utf-8")
-	public boolean savePost(@RequestBody PostDto dto, HttpServletRequest request) {
+	public Post savePost(@RequestBody PostDto dto, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Long userId = (Long) session.getAttribute("userId");
-		postService.savePost(dto, userId);
-		return true;
+		return postService.savePost(dto, userId);
 	}
 
 	@PutMapping("/post")
@@ -86,6 +85,7 @@ public class PostRestController {
 		return result;
 	}
 
+	
 	@GetMapping("/post/{postId}")
 	public List<Object> getPost(@PathVariable("postId") Long postId) {
 		List<Object> result = new ArrayList<Object>();

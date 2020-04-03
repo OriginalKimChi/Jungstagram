@@ -1,5 +1,6 @@
 package com.jungstagram.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -20,11 +21,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 자동 추
 @Getter
+@Setter
 @Entity
-public class Post implements Comparable<Post>{
+public class Post implements Comparable<Post>, Serializable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

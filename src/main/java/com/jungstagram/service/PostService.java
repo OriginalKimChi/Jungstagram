@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,12 +39,13 @@ public class PostService {
 	private RedisTemplate<String, String> redisTemplate;
 
 	@Transactional
-	public Long savePost(PostDto dto, Long userId) {
+	public Post savePost(PostDto dto, Long userId) {
 		return postRepo.save(Post.builder().title(dto.getTitle()).content(dto.getContent())
-				.user(userRepo.findById(userId).get()).build()).getId();
+				.user(userRepo.findById(userId).get()).build());
 	}
 
 	@Transactional
+	@Cacheable(value = "post", key = "#postId")
 	public Post findPostById(Long postId) {
 		Long count = 0L;
 		ValueOperations<String, String> vop = redisTemplate.opsForValue();
@@ -92,6 +94,7 @@ public class PostService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "post", key = "#postId")
 	public void deletePostById(Long postId) {
 		postRepo.deleteById(postId);
 	}
